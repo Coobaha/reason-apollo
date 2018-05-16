@@ -35,11 +35,12 @@ module MutationFactory = (Config: Config) => {
     "networkStatus": int,
     "variables": Js.Null_undefined.t(Js.Json.t),
   };
+  type mutationUpdater = (proxy, {. "data": Config.t}) => unit;
   type apolloMutation =
     (
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
-      ~update: string=?,
+      ~update: mutationUpdater=?,
       unit
     ) =>
     Js.Promise.t(renderPropObjJS);
@@ -48,7 +49,7 @@ module MutationFactory = (Config: Config) => {
     (
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
-      ~update: string=?
+      ~update: mutationUpdater=?
     ) =>
     _ =
     "";
@@ -87,7 +88,8 @@ module MutationFactory = (Config: Config) => {
   let make =
       (
         ~variables: option(Js.Json.t)=?,
-        ~onError: option(unit => unit)=?,
+        ~update: option(mutationUpdater)=?,
+        ~onError: option(apolloError => unit)=?,
         ~onCompleted: option(unit => unit)=?,
         children: (apolloMutation, renderPropObj) => ReasonReact.reactElement,
       ) =>
@@ -97,6 +99,7 @@ module MutationFactory = (Config: Config) => {
         Js.Nullable.(
           {
             "mutation": graphqlMutationAST,
+            "update": update |> fromOption,
             "variables": variables |> fromOption,
             "onError": onError |> fromOption,
             "onCompleted": onCompleted |> fromOption,

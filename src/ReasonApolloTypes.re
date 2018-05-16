@@ -34,3 +34,25 @@ type apolloOptions = {
   "query": queryString,
   "variables": Js.Json.t,
 };
+
+type queryObj = {
+  .
+  "query": queryString,
+  "variables": Js.Null_undefined.t(Js.Json.t),
+};
+
+type queryObjWithData('a) = {
+  .
+  "query": queryString,
+  "variables": Js.Null_undefined.t(Js.Json.t),
+  "data": 'a
+};
+
+type mutationObj = {
+  .
+  "mutation": queryString,
+  "variables": Js.Null_undefined.t(Js.Json.t),
+};
+
+/*cache DataProxy*/
+type proxy;

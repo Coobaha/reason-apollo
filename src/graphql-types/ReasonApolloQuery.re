@@ -32,6 +32,30 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     "fetchMore": [@bs.meth] (apolloOptions => Js.Promise.t(unit)),
   };
   let graphqlQueryAST = gql(. Config.query);
+  [@bs.send]
+  external getData : (proxy, queryObj) => Js.Nullable.t(Config.t) =
+    "readQuery";
+  let getData = (~variables: option(Js.Json.t)=?, proxy) =>
+    getData(
+      proxy,
+      {
+        "query": graphqlQueryAST,
+        "variables": variables |> Js.Nullable.fromOption,
+      },
+    );
+  type queryWithData = queryObjWithData(Config.t);
+  [@bs.send]
+  external setData : (proxy, queryWithData) => unit =
+    "writeQuery";
+  let setData = (~variables: option(Js.Json.t)=?, ~data, proxy) =>
+    setData(
+      proxy,
+      {
+        "query": graphqlQueryAST,
+        "variables": variables |> Js.Nullable.fromOption,
+        "data": data,
+      },
+    );
   let apolloDataToVariant: renderPropObjJS => response =
     apolloData =>
       switch (
