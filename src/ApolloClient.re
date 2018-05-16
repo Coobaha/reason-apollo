@@ -1,13 +1,22 @@
 open ReasonApolloTypes;
 
-type queryObj = {. "query": ReasonApolloTypes.queryString, "variables": Js.Json.t };
-type mutationObj = {. "mutation": ReasonApolloTypes.queryString, "variables": Js.Json.t};
-
-type generatedApolloClient = {.
-  "query": [@bs.meth] (queryObj => string),
-  "mutate": [@bs.meth] (mutationObj => string)
+type queryObj = {
+  .
+  "query": ReasonApolloTypes.queryString,
+  "variables": Js.Json.t,
 };
 
+type mutationObj = {
+  .
+  "mutation": ReasonApolloTypes.queryString,
+  "variables": Js.Json.t,
+};
+
+type generatedApolloClient = {
+  .
+  "query": [@bs.meth] (queryObj => string),
+  "mutate": [@bs.meth] (mutationObj => string),
+};
 
 type fetch;
 
@@ -18,16 +27,14 @@ type linkOptions = {
   "fetch": Js.Nullable.t(fetch),
   "headers": Js.Nullable.t(Js.Json.t),
   "credentials": Js.Nullable.t(string),
-  "fetchOptions": Js.Nullable.t(Js.Json.t)
+  "fetchOptions": Js.Nullable.t(Js.Json.t),
 };
 
 [@bs.module "apollo-client"] [@bs.new]
-external createApolloClientJS : 'a => generatedApolloClient =
-  "ApolloClient";
+external createApolloClientJS : 'a => generatedApolloClient = "ApolloClient";
 
-
-[@bs.obj] external
-  apolloClientObjectParam :
+[@bs.obj]
+external apolloClientObjectParam :
   (
     ~link: apolloLink,
     ~cache: apolloCache,
@@ -35,4 +42,6 @@ external createApolloClientJS : 'a => generatedApolloClient =
     ~ssrForceFetchDelay: int=?,
     ~connectToDevTools: bool=?,
     ~queryDeduplication: bool=?
-  ) => _ = "";
+  ) =>
+  _ =
+  "";

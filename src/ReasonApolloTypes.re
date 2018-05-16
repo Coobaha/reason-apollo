@@ -8,7 +8,7 @@ type queryString;
  * query string to the standard GraphQL AST.
  * https://github.com/apollographql/graphql-tag
  */
-type gql = [@bs] (string => queryString);
+type gql = (. string) => queryString;
 
 /**
  * An abstract type to describe an Apollo Link object.
@@ -30,7 +30,7 @@ module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
 type apolloError;
 
 type apolloOptions = {
-    .
-    "query": queryString,
-    "variables": Js.Json.t,
+  .
+  "query": queryString,
+  "variables": Js.Json.t,
 };
