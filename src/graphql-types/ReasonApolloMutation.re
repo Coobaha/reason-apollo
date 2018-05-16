@@ -24,8 +24,8 @@ module MutationFactory = (Config:Config) => {
 
     type renderPropObjJS = {
       .
-      "loading": Js.boolean,
-      "called": Js.boolean,
+      "loading": bool,
+      "called": bool,
       "data": Js.Nullable.t(Js.Json.t),
       "error": Js.Nullable.t(apolloError),
       "networkStatus": int,
@@ -55,10 +55,10 @@ module MutationFactory = (Config:Config) => {
     let apolloDataToReason: renderPropObjJS => response = 
       apolloData =>
         switch (
-          apolloData##called |> Js.to_bool,
-          apolloData##loading |> Js.to_bool,
+          apolloData##called ,
+          apolloData##loading ,
           apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
-          apolloData##error |> Js.Nullable.to_opt
+          apolloData##error |> Js.Nullable.toOption
         ) {
         | (true, false, _, _) => Called
         | (_, true, _, _) => Loading
@@ -78,8 +78,8 @@ module MutationFactory = (Config:Config) => {
           | exception _ => None
           }
         },
-      error: apolloData##error |> Js.Nullable.to_opt,
-      loading: apolloData##loading |> Js.to_bool,
+      error: apolloData##error |> Js.Nullable.toOption,
+      loading: apolloData##loading ,
       networkStatus: apolloData##networkStatus,
     };
 
@@ -95,9 +95,9 @@ module MutationFactory = (Config:Config) => {
       ~props=Js.Nullable.(
         {
           "mutation": graphqlMutationAST,
-          "variables": variables |> from_opt,
-          "onError": onError |> from_opt,
-          "onCompleted": onCompleted |> from_opt
+          "variables": variables |> fromOption,
+          "onError": onError |> fromOption,
+          "onCompleted": onCompleted |> fromOption
         }
       ),
       (mutation, apolloData) =>
