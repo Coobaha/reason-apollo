@@ -35,12 +35,14 @@ module MutationFactory = (Config: Config) => {
     "networkStatus": int,
     "variables": Js.Null_undefined.t(Js.Json.t),
   };
+  type optimisticResponse = Config.t;
   type mutationUpdater = (proxy, {. "data": Config.t}) => unit;
   type apolloMutation =
     (
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
       ~update: mutationUpdater=?,
+      ~optimisticResponse: optimisticResponse=?,
       unit
     ) =>
     Js.Promise.t(renderPropObjJS);
@@ -49,13 +51,21 @@ module MutationFactory = (Config: Config) => {
     (
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
-      ~update: mutationUpdater=?
+      ~update: mutationUpdater=?,
+      ~optimisticResponse: optimisticResponse=?
     ) =>
     _ =
     "";
   let apolloMutationFactory =
-      (~jsMutation, ~variables=?, ~refetchQueries=?, ~update=?, ()) =>
-    jsMutation(makeMutateParams(~variables?, ~refetchQueries?, ~update?));
+      (
+        ~jsMutation,
+        ~variables=?,
+        ~refetchQueries=?,
+        ~update=?,
+        ~optimisticResponse=?,
+        (),
+      ) =>
+    jsMutation(makeMutateParams(~variables?, ~refetchQueries?, ~update?, ~optimisticResponse?));
   let apolloDataToReason: renderPropObjJS => response =
     apolloData =>
       switch (
