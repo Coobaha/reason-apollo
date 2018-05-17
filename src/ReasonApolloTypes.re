@@ -27,7 +27,41 @@ type apolloLinkErrorResponse = {. "networkError": option(networkError)};
 
 module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
 
-type apolloError;
+module Language = {
+  type location = {
+    .
+    "line": int,
+    "column": int,
+  };
+  type source = {
+    .
+    "body": string,
+    "name": string,
+    "locationOffset": location,
+  };
+  type astNode;
+};
+
+
+/***
+ * Represents a GraphQL Error type
+ */
+type graphQLError = {
+  .
+  "message": string,
+  "locations": Js.null_undefined(Js.Array.t(Language.location)),
+  "nodes": Js.null_undefined(Js.Array.t(Language.astNode)),
+  "source": Js.null_undefined(Language.source),
+  "positions": Js.null_undefined(Js.Array.t(int)),
+  "originalError": Js.null_undefined(Js.Exn.t),
+};
+
+type apolloError = {
+  .
+  "message": string,
+  "graphQLErrors": array(graphQLError),
+  "networkError": exn,
+};
 
 type apolloOptions = {
   .
@@ -45,7 +79,7 @@ type queryObjWithData('a) = {
   .
   "query": queryString,
   "variables": Js.Null_undefined.t(Js.Json.t),
-  "data": 'a
+  "data": 'a,
 };
 
 type mutationObj = {
@@ -56,3 +90,29 @@ type mutationObj = {
 
 /*cache DataProxy*/
 type proxy;
+
+/*
+ fetchPolicy determines where the client may return a result from. The options are:
+   - cache-first (default): return result from cache. Only fetch from network if cached result is not available.
+   - cache-and-network: returns result from cache first (if it exists), then return network result once it's available
+   - cache-only: return result from cache if avaiable, fail otherwise.
+   - network-only: return result from network, fail if network call doesn't succeed.
+   - standby: only for queries that aren't actively watched, but should be available for refetch and updateQueries.
+ */
+type fetchPolicy =
+  | CacheFirst
+  | CacheAndNetwork
+  | CacheOnly
+  | NetworkOnly
+  | Standby;
+
+/*
+ errorPolicy determines the level of events for errors in the execution result. The options are:
+   - None' (default): any errors from the request are treated like runtime errors and the observable is stopped
+   - ignore: errors from the request do not stop the observable, but also don't call `next`
+   - all: errors are treated like data and will notify observables
+*/
+type errorPolicy =
+  | None'
+  | All
+  | Ignore;

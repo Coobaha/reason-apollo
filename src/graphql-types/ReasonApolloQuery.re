@@ -44,9 +44,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       },
     );
   type queryWithData = queryObjWithData(Config.t);
-  [@bs.send]
-  external setData : (proxy, queryWithData) => unit =
-    "writeQuery";
+  [@bs.send] external setData : (proxy, queryWithData) => unit = "writeQuery";
   let setData = (~variables: option(Js.Json.t)=?, ~data, proxy) =>
     setData(
       proxy,
@@ -102,8 +100,8 @@ module Get = (Config: ReasonApolloTypes.Config) => {
         ~variables: option(Js.Json.t)=?,
         ~pollInterval: option(int)=?,
         ~notifyOnNetworkStatusChange: option(bool)=?,
-        ~fetchPolicy: option(string)=?,
-        ~errorPolicy: option(string)=?,
+        ~fetchPolicy: option(fetchPolicy)=?,
+        ~errorPolicy: option(errorPolicy)=?,
         ~ssr: option(bool)=?,
         ~displayName: option(string)=?,
         ~delay: option(bool)=?,
@@ -120,8 +118,28 @@ module Get = (Config: ReasonApolloTypes.Config) => {
             "pollInterval": pollInterval |> fromOption,
             "notifyOnNetworkStatusChange":
               notifyOnNetworkStatusChange |> fromOption,
-            "fetchPolicy": fetchPolicy |> fromOption,
-            "errorPolicy": errorPolicy |> fromOption,
+            "fetchPolicy":
+              switch (fetchPolicy) {
+              | Some(policy) =>
+                switch (policy) {
+                | CacheFirst => return("cache-first")
+                | CacheAndNetwork => return("cache-and-network")
+                | CacheOnly => return("cache-only")
+                | NetworkOnly => return("network-only")
+                | Standby => return("standby")
+                }
+              | None => undefined
+              },
+            "errorPolicy":
+              switch (errorPolicy) {
+              | Some(policy) =>
+                switch (policy) {
+                | None' => return("none")
+                | All => return("all")
+                | Ignore => return("ignore")
+                }
+              | None => undefined
+              },
             "ssr": ssr |> fromOption,
             "displayName": displayName |> fromOption,
             "delay": delay |> fromOption,

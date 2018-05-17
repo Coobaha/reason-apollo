@@ -52,6 +52,7 @@ module MutationFactory = (Config: Config) => {
       ~variables: Js.Json.t=?,
       ~refetchQueries: array(string)=?,
       ~update: mutationUpdater=?,
+      ~errorPolicy: Js.Nullable.t(string)=?,
       ~optimisticResponse: optimisticResponse=?
     ) =>
     _ =
@@ -62,10 +63,19 @@ module MutationFactory = (Config: Config) => {
         ~variables=?,
         ~refetchQueries=?,
         ~update=?,
+        ~errorPolicy=?,
         ~optimisticResponse=?,
         (),
       ) =>
-    jsMutation(makeMutateParams(~variables?, ~refetchQueries?, ~update?, ~optimisticResponse?));
+    jsMutation(
+      makeMutateParams(
+        ~variables?,
+        ~refetchQueries?,
+        ~update?,
+        ~optimisticResponse?,
+        ~errorPolicy?,
+      ),
+    );
   let apolloDataToReason: renderPropObjJS => response =
     apolloData =>
       switch (
@@ -98,6 +108,7 @@ module MutationFactory = (Config: Config) => {
   let make =
       (
         ~variables: option(Js.Json.t)=?,
+        ~errorPolicy: option(errorPolicy)=?,
         ~update: option(mutationUpdater)=?,
         ~onError: option(apolloError => unit)=?,
         ~onCompleted: option(unit => unit)=?,
@@ -117,7 +128,21 @@ module MutationFactory = (Config: Config) => {
         ),
       (mutation, apolloData) =>
       children(
-        apolloMutationFactory(~jsMutation=mutation),
+        apolloMutationFactory(
+          ~jsMutation=mutation,
+          ~errorPolicy=
+            Js.Nullable.(
+              switch (errorPolicy) {
+              | Some(policy) =>
+                switch (policy) {
+                | None' => return("none")
+                | All => return("all")
+                | Ignore => return("ignore")
+                }
+              | None => undefined
+              }
+            ),
+        ),
         convertJsInputToReason(apolloData),
       )
     );
