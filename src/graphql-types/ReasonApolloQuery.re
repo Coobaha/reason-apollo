@@ -12,6 +12,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
   type renderPropObj = {
     result: response,
     data: option(Config.t),
+    variables: option(Js.Json.t),
     error: option(apolloError),
     loading: bool,
     refetch: option(Js.Json.t) => Js.Promise.t(response),
@@ -83,6 +84,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       | None => None
       },
     loading: apolloData##loading,
+    variables: apolloData##variables |> Js.Nullable.toOption,
     refetch: variables =>
       apolloData##refetch(variables |> Js.Nullable.fromOption)
       |> Js.Promise.then_(data =>
