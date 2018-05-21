@@ -25,7 +25,11 @@ type networkError = {. "statusCode": int};
 /* TODO: define missing keys */
 type apolloLinkErrorResponse = {. "networkError": option(networkError)};
 
-module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
+module type Config = {
+  let ppx_printed_query: string;
+  type t;
+  let parse: Js.Json.t => t;
+};
 
 module Language = {
   type location = {
@@ -41,7 +45,6 @@ module Language = {
   };
   type astNode;
 };
-
 
 /***
  * Represents a GraphQL Error type
@@ -107,11 +110,11 @@ type fetchPolicy =
   | Standby;
 
 /*
- errorPolicy determines the level of events for errors in the execution result. The options are:
-   - None' (default): any errors from the request are treated like runtime errors and the observable is stopped
-   - ignore: errors from the request do not stop the observable, but also don't call `next`
-   - all: errors are treated like data and will notify observables
-*/
+  errorPolicy determines the level of events for errors in the execution result. The options are:
+    - None' (default): any errors from the request are treated like runtime errors and the observable is stopped
+    - ignore: errors from the request do not stop the observable, but also don't call `next`
+    - all: errors are treated like data and will notify observables
+ */
 type errorPolicy =
   | None'
   | All

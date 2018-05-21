@@ -12,7 +12,7 @@ module MutationFactory = (Config: Config) => {
   [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
   [@bs.module "react-apollo"]
   external mutationComponent : ReasonReact.reactClass = "Mutation";
-  let graphqlMutationAST = gql(. Config.query);
+  let graphqlMutationAST = gql(. Config.ppx_printed_query);
   type response =
     | Loading
     | Called

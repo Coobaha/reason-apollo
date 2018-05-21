@@ -32,7 +32,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     "variables": Js.Null_undefined.t(Js.Json.t),
     "fetchMore": [@bs.meth] (apolloOptions => Js.Promise.t(unit)),
   };
-  let graphqlQueryAST = gql(. Config.query);
+  let graphqlQueryAST = gql(. Config.ppx_printed_query);
   [@bs.send]
   external getData : (proxy, queryObj) => Js.Nullable.t(Config.t) =
     "readQuery";
