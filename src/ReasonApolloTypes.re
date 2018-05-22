@@ -52,18 +52,18 @@ module Language = {
 type graphQLError = {
   .
   "message": string,
-  "locations": Js.null_undefined(Js.Array.t(Language.location)),
-  "nodes": Js.null_undefined(Js.Array.t(Language.astNode)),
-  "source": Js.null_undefined(Language.source),
-  "positions": Js.null_undefined(Js.Array.t(int)),
-  "originalError": Js.null_undefined(Js.Exn.t),
+  "locations": Js.Nullable.t(array(Language.location)),
+  "nodes": Js.Nullable.t(array(Language.astNode)),
+  "source": Js.Nullable.t(Language.source),
+  "positions": Js.Nullable.t(array(int)),
+  "originalError": Js.Nullable.t(Js.Exn.t),
 };
 
 type apolloError = {
   .
   "message": string,
   "graphQLErrors": array(graphQLError),
-  "networkError": exn,
+  "networkError": Js.Nullable.t(string),
 };
 
 type apolloOptions = {
