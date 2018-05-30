@@ -31,7 +31,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
     "variables": Js.Null_undefined.t(Js.Json.t),
     "fetchMore": [@bs.meth] (apolloOptions => Js.Promise.t(unit)),
   };
-  let graphqlQueryAST = gql(. Config.ppx_printed_query);
+  let graphqlQueryAST = gql(. Config.query);
   [@bs.send]
   external getData : (proxy, queryObj) => Js.Nullable.t(Config.t) =
     "readQuery";
@@ -65,11 +65,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
       | (false, Some(response), _) => Data(Config.parse(response))
       | (false, _, Some(error)) => Error(error)
       | (false, None, None) =>
-        Error({
-          "message": "No data",
-          "graphQLErrors": [||],
-          "networkError": Js.Nullable.null,
-        })
+        Error(apolloError(~message="No Data", ~graphQLErrors=[||], ()))
       };
   let convertJsInputToReason = (apolloData: renderPropObjJS) => {
     result: apolloData |> apolloDataToVariant,

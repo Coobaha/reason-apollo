@@ -25,11 +25,7 @@ type networkError = {. "statusCode": int};
 /* TODO: define missing keys */
 type apolloLinkErrorResponse = {. "networkError": option(networkError)};
 
-module type Config = {
-  let ppx_printed_query: string;
-  type t;
-  let parse: Js.Json.t => t;
-};
+module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
 
 module Language = {
   type location = {
@@ -59,11 +55,21 @@ type graphQLError = {
   "originalError": Js.Nullable.t(Js.Exn.t),
 };
 
+[@bs.deriving abstract]
 type apolloError = {
-  .
-  "message": string,
-  "graphQLErrors": array(graphQLError),
-  "networkError": Js.Nullable.t(string),
+  message: string,
+  graphQLErrors: array(graphQLError),
+  [@bs.optional]
+  networkError: Js.Nullable.t(string),
+  [@bs.optional] [@bs.as "networkError"]
+  networkErrorObj:
+    Js.Nullable.t(
+      {
+        .
+        "message": string,
+        "result": Js.Nullable.t({. "errors": array(graphQLError)}),
+      },
+    ),
 };
 
 type apolloOptions = {

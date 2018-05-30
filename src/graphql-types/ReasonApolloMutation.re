@@ -12,10 +12,9 @@ module MutationFactory = (Config: Config) => {
   [@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
   [@bs.module "react-apollo"]
   external mutationComponent : ReasonReact.reactClass = "Mutation";
-  let graphqlMutationAST = gql(. Config.ppx_printed_query);
+  let graphqlMutationAST = gql(. Config.query);
   type response =
     | Loading
-    | Called
     | Error(apolloError)
     | Data(Config.t)
     | NotCalled;
@@ -79,16 +78,14 @@ module MutationFactory = (Config: Config) => {
   let apolloDataToReason: renderPropObjJS => response =
     apolloData =>
       switch (
-        apolloData##called,
         apolloData##loading,
         apolloData##data |> ReasonApolloUtils.getNonEmptyObj,
         apolloData##error |> Js.Nullable.toOption,
       ) {
-      | (true, false, _, _) => Called
-      | (_, true, _, _) => Loading
-      | (false, false, Some(data), None) => Data(Config.parse(data))
-      | (false, false, _, Some(error)) => Error(error)
-      | (false, false, None, None) => NotCalled
+      | (true, _, _) => Loading
+      | (false, Some(data), None) => Data(Config.parse(data))
+      | (false, _, Some(error)) => Error(error)
+      | (false, None, None) => NotCalled
       };
   let convertJsInputToReason = (apolloData: renderPropObjJS) => {
     result: apolloDataToReason(apolloData),
