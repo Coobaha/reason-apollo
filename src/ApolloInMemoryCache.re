@@ -40,13 +40,19 @@ let createIntrospectionFragmentMatcher = (~data) =>
 external makeApolloInMemoryCacheParams :
   (
     ~dataIdFromObject: Js.t({..}) => string=?,
+    ~cacheRedirects: Js.t({..})=?,
     ~fragmentMatcher: fragmentMatcher=?
   ) =>
   _ =
   "";
 
-let createInMemoryCache = (~dataIdFromObject=?, ~fragmentMatcher=?, ()) =>
+let createInMemoryCache =
+    (~dataIdFromObject=?, ~fragmentMatcher=?, ~cacheRedirects=?, ()) =>
   /* Apollo Client, looks for key in Object. Doesn't check if value is null  */
   apolloInMemoryCache(
-    makeApolloInMemoryCacheParams(~dataIdFromObject?, ~fragmentMatcher?),
+    makeApolloInMemoryCacheParams(
+      ~dataIdFromObject?,
+      ~fragmentMatcher?,
+      ~cacheRedirects?,
+    ),
   );
