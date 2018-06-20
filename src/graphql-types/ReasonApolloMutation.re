@@ -44,7 +44,13 @@ module MutationFactory = (Config: Config) => {
       ~optimisticResponse: optimisticResponse=?,
       unit
     ) =>
-    Js.Promise.t(renderPropObjJS);
+    Js.Promise.t(
+      {
+        .
+        "data": Js.Nullable.t(Js.Json.t),
+        "errors": Js.Nullable.t(array(graphQLError)),
+      },
+    );
   [@bs.obj]
   external makeMutateParams :
     (
