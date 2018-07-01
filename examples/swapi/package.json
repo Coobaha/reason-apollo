@@ -7,7 +7,7 @@
     "clean": "bsb -clean-world",
     "webpack": "webpack-dev-server",
     "format": "refmt",
-    "get-schema": "yarn send-introspection-query http://swapi.apis.guru/"
+    "get-schema": "yarn send-introspection-query https://api.graph.cool/simple/v1/cjdgba1jw4ggk0185ig4bhpsn"
   },
   "keywords": [
     "BuckleScript"
@@ -15,23 +15,26 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "apollo-cache-inmemory": "^1.1.7",
-    "apollo-client": "^2.2.3",
-    "apollo-link": "^1.1.0",
-    "apollo-link-context": "^1.0.5",
-    "apollo-link-error": "^1.0.5",
-    "apollo-link-http": "^1.3.3",
-    "graphql": "^0.13.0",
-    "graphql-tag": "^2.7.3",
-    "react": "^15.4.2",
-    "react-apollo": "^2.1.3",
-    "react-dom": "^15.4.2",
+    "apollo-cache-inmemory": "^1.2.1",
+    "apollo-client": "^2.3.1",
+    "apollo-link": "^1.2.2",
+    "apollo-link-context": "^1.0.8",
+    "apollo-link-error": "^1.0.9",
+    "apollo-link-http": "^1.5.4",
+    "apollo-link-ws": "^1.0.8",
+    "apollo-utilities": "^1.0.16",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.2",
+    "react": "^16.3.2",
+    "react-apollo": "^2.1.6",
+    "react-dom": "^16.3.2",
     "reason-apollo": "../../",
-    "reason-react": ">=0.3.0"
+    "reason-react": "^0.4.1",
+    "subscriptions-transport-ws": "^0.9.11"
   },
   "devDependencies": {
-    "bs-platform": "^2.1.0",
-    "graphql_ppx": "^0.2.0",
+    "bs-platform": "^3.1.4",
+    "graphql_ppx": "^0.2.4",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.0.15",
     "webpack-dev-server": "^3.1.3"

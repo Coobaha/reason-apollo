@@ -22,3 +22,8 @@ node_modules/
 lib
 *.bs.js
 
+**/*.swp
+
+.bsb.lock
+schema.graphql
+.DS_Store

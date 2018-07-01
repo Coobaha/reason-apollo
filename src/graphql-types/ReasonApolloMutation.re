@@ -89,7 +89,7 @@ module MutationFactory = (Config: Config) => {
         apolloData##error |> Js.Nullable.toOption,
       ) {
       | (true, _, _) => Loading
-      | (false, Some(data), None) => Data(Config.parse(data))
+      | (false, Some(data), _) => Data(Config.parse(data))
       | (false, _, Some(error)) => Error(error)
       | (false, None, None) => NotCalled
       };

@@ -125,3 +125,23 @@ type errorPolicy =
   | None'
   | All
   | Ignore;
+
+/*
+ apollo link ws
+ */
+
+[@bs.deriving abstract]
+type webSocketLinkOptionsT = {
+  [@bs.optional]
+  reconnect: bool,
+};
+
+[@bs.deriving abstract]
+type webSocketLinkT = {
+  uri: string,
+  options: webSocketLinkOptionsT,
+};
+
+type documentNodeT;
+
+type splitTest = {. "query": documentNodeT};
