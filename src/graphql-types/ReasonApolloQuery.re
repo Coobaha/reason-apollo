@@ -33,7 +33,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
   };
   let graphqlQueryAST = gql(. Config.query);
   [@bs.send]
-  external getData : (proxy, queryObj) => Js.Nullable.t(Config.t) =
+  external getData : (proxy, queryObj) => Js.Nullable.t(Js.Json.t) =
     "readQuery";
   let getData = (~variables: option(Js.Json.t)=?, proxy) =>
     getData(
@@ -43,7 +43,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
         "variables": variables |> Js.Nullable.fromOption,
       },
     );
-  type queryWithData = queryObjWithData(Config.t);
+  type queryWithData = queryObjWithData(Js.Nullable.t(Js.Json.t));
   [@bs.send] external setData : (proxy, queryWithData) => unit = "writeQuery";
   let setData = (~variables: option(Js.Json.t)=?, ~data, proxy) =>
     setData(
