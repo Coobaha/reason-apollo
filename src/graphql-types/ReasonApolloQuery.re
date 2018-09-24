@@ -43,7 +43,7 @@ module Get = (Config: ReasonApolloTypes.Config) => {
         "variables": variables |> Js.Nullable.fromOption,
       },
     );
-  type queryWithData = queryObjWithData(Config.t);
+  type queryWithData = queryObjWithData(Js.Nullable.t(Config.t));
   [@bs.send] external setData : (proxy, queryWithData) => unit = "writeQuery";
   let setData = (~variables: option(Js.Json.t)=?, ~data, proxy) =>
     setData(
