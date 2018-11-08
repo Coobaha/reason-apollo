@@ -1,21 +1,10 @@
 open ReasonApolloTypes;
 
-type queryObj = {
-  .
-  "query": ReasonApolloTypes.queryString,
-  "variables": Js.Json.t,
-};
-
-type mutationObj = {
-  .
-  "mutation": ReasonApolloTypes.queryString,
-  "variables": Js.Json.t,
-};
-
 type generatedApolloClient = {
   .
-  "query": [@bs.meth] (queryObj => string),
-  "mutate": [@bs.meth] (mutationObj => string),
+  "query": [@bs.meth] (queryObj => Js.Promise.t(ReasonApolloQuery.renderPropObjJS)),
+  "mutate": [@bs.meth] (mutationObj => Js.Promise.t(ReasonApolloMutation.renderPropObjJS)),
+  "resetStore": [@bs.meth] (unit => unit),
 };
 
 type fetch;
@@ -28,6 +17,16 @@ type linkOptions = {
   "headers": Js.Nullable.t(Js.Json.t),
   "credentials": Js.Nullable.t(string),
   "fetchOptions": Js.Nullable.t(Js.Json.t),
+};
+
+type uploadLinkOptions = {
+  .
+  "uri": Js.Nullable.t(string),
+  "fetch": Js.Nullable.t(fetch),
+  "fetchOptions": Js.Nullable.t(Js.t({.})),
+  "credentials": Js.Nullable.t(string),
+  "headers": Js.Nullable.t(Js.Json.t),
+  "includeExtensions": Js.Nullable.t(bool),
 };
 
 [@bs.module "apollo-client"] [@bs.new]

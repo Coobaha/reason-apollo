@@ -22,11 +22,6 @@ type apolloCache;
 
 type networkError = {. "statusCode": int};
 
-/* TODO: define missing keys */
-type apolloLinkErrorResponse = {. "networkError": option(networkError)};
-
-module type Config = {let query: string; type t; let parse: Js.Json.t => t;};
-
 module Language = {
   type location = {
     .
@@ -45,7 +40,7 @@ module Language = {
 /***
  * Represents a GraphQL Error type
  */
-type graphQLError = {
+type graphqlError = {
   .
   "message": string,
   "locations": Js.Nullable.t(array(Language.location)),
@@ -58,24 +53,43 @@ type graphQLError = {
 [@bs.deriving abstract]
 type apolloError = {
   message: string,
-  graphQLErrors: array(graphQLError),
+  graphQLErrors: array(graphqlError),
   [@bs.optional]
   networkError: Js.Nullable.t(string),
   [@bs.optional] [@bs.as "networkError"]
   networkErrorObj:
-    Js.Nullable.t(
-      {
-        .
-        "message": string,
-        "result": Js.Nullable.t({. "errors": array(graphQLError)}),
-      },
-    ),
+    Js.Nullable.t({
+      .
+      "message": string,
+      "result": Js.Nullable.t({. "errors": array(graphqlError)}),
+    }),
 };
 
-type apolloOptions = {
+type executionResult = {
   .
-  "query": queryString,
-  "variables": Js.Json.t,
+  "errors": Js.Nullable.t(Js.Array.t(graphqlError)),
+  "data": Js.Nullable.t(Js.Json.t),
+};
+
+/* TODO define all types */
+type operation = {. "query": queryString};
+
+/* TODO define subscription */
+type subscription;
+
+type errorResponse = {
+  .
+  "graphQLErrors": Js.Nullable.t(Js.Array.t(graphqlError)),
+  "networkError": Js.Nullable.t(networkError),
+  "response": Js.Nullable.t(executionResult),
+  "operation": operation,
+  "forward": operation => subscription,
+};
+
+module type Config = {
+  let query: string;
+  type t;
+  let parse: Js.Json.t => t;
 };
 
 type queryObj = {
@@ -96,6 +110,28 @@ type mutationObj = {
   "mutation": queryString,
   "variables": Js.Null_undefined.t(Js.Json.t),
 };
+
+type apolloOptions = {
+  .
+  "query": queryString,
+  "variables": Js.Null_undefined.t(Js.Json.t),
+};
+
+type queryResponse('a) =
+  | Loading
+  | Error(apolloError)
+  | Data('a);
+
+type mutationResponse('a) =
+  | Loading
+  | Error(apolloError)
+  | Data('a)
+  | NotCalled;
+
+type subscriptionResponse('a) =
+  | Loading
+  | Error(apolloError)
+  | Data('a);
 
 /*cache DataProxy*/
 type proxy;
